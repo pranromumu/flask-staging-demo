@@ -16,4 +16,6 @@ def version():
     return jsonify({"version": "1.0.0-staging", "environment": "staging"})
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    app.run(host='0.0.0.0', port=5000, debug=True)@app.route('/about') 
+def about(): 
+    return 'This is a CI/CD learning project. Deployed to Render staging!' 
