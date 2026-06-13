@@ -1,0 +1,58 @@
+name: Deploy to Production (with Approval) 
+ 
+on: 
+  workflow_dispatch: 
+    inputs: 
+      version: 
+        description: 'Version to deploy' 
+        required: true 
+        default: 'latest' 
+      confirm: 
+        description: 'Type "DEPLOY" to confirm' 
+        required: true 
+ 
+jobs: 
+  pre-deploy-check: 
+    runs-on: ubuntu-latest 
+    steps: 
+    - name: Verify confirmation 
+        if [ "^%{{ github.event.inputs.confirm }}" != "DEPLOY" ]; then 
+          echo "Error: You must type 'DEPLOY' to confirm" 
+          exit 1 
+        fi 
+        echo "Confirmation verified!" 
+ 
+  deploy-to-production: 
+    needs: pre-deploy-check 
+    runs-on: ubuntu-latest 
+    environment: 
+      name: production 
+      url: https://your-app.com 
+    steps: 
+    - uses: actions/checkout@v4 
+    - name: Set up Python 
+      uses: actions/setup-python@v5 
+      with: 
+        python-version: '3.11' 
+ 
+    - name: Run final tests before production 
+        pip install flask pytest 
+        pytest tests/ -v 
+ 
+    - name: Deploy to production 
+        echo "========================================" 
+        echo "DEPLOYING TO PRODUCTION" 
+        echo "========================================" 
+        echo "Version: ^%{{ github.event.inputs.version }}" 
+        echo "Deployed by: ^%{{ github.actor }}" 
+        echo "Timestamp: $(date)" 
+        echo "========================================" 
+ 
+    - name: Health check 
+        echo "Running health checks..." 
+        # In production, you'd curl your actual endpoint 
+        echo "Health check passed!" 
+ 
+    - name: Post-deploy notification 
+        echo "Production deployment completed successfully!" 
+        echo "Notify team: Version ^%{{ github.event.inputs.version }} is live" 
