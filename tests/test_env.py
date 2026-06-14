@@ -5,8 +5,8 @@ from app import app
 def test_environment_config(): 
     """Test that environment variables are loaded correctly""" 
     # This test would use GitHub secrets in CI 
-    api_key = os.getenv('API_KEY', 'test-key') 
-    assert len(api_key) 
+    api_key = os.getenv('API_KEY') or 'test-key'
+assert len(api_key)
  
 def test_config_endpoint(): 
     response = app.test_client().get('/config') 
