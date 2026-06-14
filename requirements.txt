@@ -2,4 +2,3 @@ Flask==2.3.0
 gunicorn
 pytest
 python-dotenv
-gunicorn
