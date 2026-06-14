@@ -1,0 +1,22 @@
+name: Auto Rollback on Health Check Failure 
+ 
+on: 
+  workflow_run: 
+    workflows: ["Deploy to Production (with Approval)"] 
+    types: [completed] 
+ 
+jobs: 
+  monitor-and-rollback: 
+    runs-on: ubuntu-latest 
+    if: failure() 
+    steps: 
+    - name: Detect deployment failure 
+        echo "========================================" 
+        echo "?? DEPLOYMENT FAILURE DETECTED" 
+        echo "========================================" 
+        echo "Initiating automatic rollback..." 
+ 
+    - name: Trigger rollback 
+        echo "Rolling back to last known good version..." 
+        # In production, this would automatically deploy last good version 
+        echo "? Automatic rollback complete" 

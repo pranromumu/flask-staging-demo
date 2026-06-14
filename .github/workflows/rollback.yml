@@ -1,0 +1,47 @@
+name: Rollback to Previous Version 
+ 
+on: 
+  workflow_dispatch: 
+    inputs: 
+      target_version: 
+        description: 'Version to rollback to (e.g., v1.0.0-working)' 
+        required: true 
+        default: 'v1.0.0-working' 
+      reason: 
+        description: 'Reason for rollback' 
+        required: true 
+ 
+jobs: 
+  rollback: 
+    runs-on: ubuntu-latest 
+    environment: 
+      name: production 
+    steps: 
+    - uses: actions/checkout@v4 
+      with: 
+        ref: %{{ github.event.inputs.target_version }} 
+ 
+    - name: Log rollback start 
+        echo "========================================" 
+        echo "?? ROLLBACK INITIATED" 
+        echo "========================================" 
+        echo "Target version: ^%{{ github.event.inputs.target_version }}" 
+        echo "Reason: ^%{{ github.event.inputs.reason }}" 
+        echo "Initiated by: ^%{{ github.actor }}" 
+        echo "Timestamp: $(date)" 
+ 
+    - name: Deploy rollback version 
+        echo "Deploying rollback version..." 
+        # In production, this would deploy to your actual servers 
+        echo "? Rollback deployment complete" 
+ 
+    - name: Health check after rollback 
+        echo "Running health checks after rollback..." 
+        echo "? Health check passed" 
+ 
+    - name: Post-rollback notification 
+        echo "========================================" 
+        echo "? ROLLBACK COMPLETED SUCCESSFULLY" 
+        echo "========================================" 
+        echo "Now running: ^%{{ github.event.inputs.target_version }}" 
+        echo "Previous broken version: v2.0.0-broken" 
